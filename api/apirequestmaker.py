@@ -16,7 +16,7 @@ class CodeForcesRequestMaker:
     loop = asyncio.get_event_loop()
 
     async def _session(self):
-        with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession() as session:
             self._session = session
 
     def __init__(self, api_key=None, secret=None, rand=None):
@@ -25,7 +25,7 @@ class CodeForcesRequestMaker:
         self.loop.run_until_complete(self._session())
 
         if not rand:
-            self._randnum = random.randint(0, 899999) + 100000
+            self._rand = random.randint(0, 899999) + 100000
             self._staticrand = True
 
         elif rand > 999999 or rand < 100000:
@@ -40,8 +40,6 @@ class CodeForcesRequestMaker:
         else:
             self._api_key = api_key
             self._secret = secret
-
-        self.loop.run_until_complete(self._session())
 
     def _get_url(self, method, **fields):
         """Get URL from method and fields. Example URL:
@@ -127,10 +125,10 @@ class CodeForcesRequestMaker:
 
         try:
             async with self._session.get(url) as resp:
-                if resp.status_code == 404:
+                if resp.status == 404:
                     raise Exception(f"Request failed: no such method.")
 
-                elif resp.status_code == 429 or resp.status_code == 503:
+                elif resp.status == 429 or resp.status == 503:
                     self._c += 1
                     if self._c < 10:
                         await asyncio.sleep(1)
