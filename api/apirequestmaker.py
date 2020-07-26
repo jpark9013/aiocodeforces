@@ -12,10 +12,6 @@ class CodeForcesRequestMaker:
     """A base wrapper class for the Request maker."""
 
     _c = 0
-    _api_key = ""
-    _secret = ""
-    _rand = None
-    _staticrand = False
     _anonymous = False
     loop = asyncio.get_event_loop()
 
@@ -37,6 +33,7 @@ class CodeForcesRequestMaker:
 
         else:
             self._rand = int(rand)
+            self._staticrand = False
 
         if not api_key or not secret:
             self._anonymous = True
