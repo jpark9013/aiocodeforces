@@ -4,6 +4,7 @@ from api.return_objects.blog_entry import BlogEntry
 from api.return_objects.comment import Comment
 from api.return_objects.contest import Contest
 from api.return_objects.hack import Hack
+from api.return_objects.hack import JudgeProtocol
 from api.return_objects.member import Member
 from api.return_objects.party import Party
 from api.return_objects.problem import Problem
@@ -17,26 +18,94 @@ from api.return_objects.user import User
 
 
 def _to_blog_entry(dic):
+    try:
+        content = dic["content"]
+    except KeyError:
+        content = None
+
     return BlogEntry(dic["id"], dic["originalLocale"], dic["creationTimeSeconds"], dic["authorHandle"], dic["title"],
-                     dic["content"], dic["locale"], dic["modificationTimeSeconds"], dic["allowViewHistory"],
-                     dic["tags"], dic["rating"])
+                     dic["locale"], dic["modificationTimeSeconds"], dic["allowViewHistory"],
+                     dic["tags"], dic["rating"], content)
 
 
 def _to_comment(dic):
+    try:
+        parentCommentId = dic["parentCommentId"]
+    except:
+        parentCommentId = None
+
     return Comment(dic["id"], dic["creationTimeSeconds"], dic["commentatorHandle"], dic["locale"], dic["text"],
-                   dic["parentCommentId"], dic["rating"])
+                   parentCommentId, dic["rating"])
 
 
 def _to_contest(dic):
+    try:
+        startTimeSeconds = dic["startTimeSeconds"]
+    except KeyError:
+        startTimeSeconds = None
+    try:
+        relativeTimeSeconds = dic["relativeTimeSeconds"]
+    except KeyError:
+        relativeTimeSeconds = None
+    try:
+        preparedBy = dic["preparedBy"]
+    except KeyError:
+        preparedBy = None
+    try:
+        websiteUrl = dic["websiteUrl"]
+    except KeyError:
+        websiteUrl = None
+    try:
+        description = dic["description"]
+    except KeyError:
+        description = None
+    try:
+        difficulty = dic["difficulty"]
+    except KeyError:
+        difficulty = None
+    try:
+        kind = dic["kind"]
+    except KeyError:
+        kind = None
+    try:
+        icpcRegion = dic["icpcRegion"]
+    except KeyError:
+        icpcRegion = None
+    try:
+        country = dic["country"]
+    except KeyError:
+        country = None
+    try:
+        city = dic["city"]
+    except KeyError:
+        city = None
+    try:
+        season = dic["season"]
+    except KeyError:
+        season = None
+
     return Contest(dic["id"], dic["name"], dic["type"], dic["phase"], dic["frozen"], dic["durationSeconds"],
-                   dic["startTimeSeconds"], dic["relativeTimeSeconds"], dic["preparedBy"], dic["websiteUrl"],
-                   dic["description"], dic["difficulty"], dic["kind"], dic["icpcRegion"], dic["country"], dic["city"],
-                   dic["season"])
+                   startTimeSeconds, relativeTimeSeconds, preparedBy, websiteUrl, description, difficulty, kind,
+                   icpcRegion, country, city, season)
 
 
 def _to_hack(dic):
+    try:
+        verdict = dic["verdict"]
+    except KeyError:
+        verdict = None
+    try:
+        test = dic["test"]
+    except KeyError:
+        test = None
+    try:
+        d = dic["judgeProtocol"]
+        judgeProtocol = JudgeProtocol(d["manual"], d["protocol"], d["verdict"])
+    except KeyError:
+        judgeProtocol = None
+
     return Hack(dic["id"], dic["creationTimeSeconds"], _to_party(dic["hacker"]), _to_party(dic["defender"]),
-                dic["verdict"], _to_problem(dic["problem"]), dic["test"], dic["judgeProtocol"])
+                verdict, _to_problem(dic["problem"]), test, judgeProtocol)
 
 
 def _to_member(dic):
@@ -44,14 +113,50 @@ def _to_member(dic):
 
 
 def _to_party(dic):
+    try:
+        contestId = dic["contestId"]
+    except KeyError:
+        contestId = None
+    try:
+        teamId = dic["teamId"]
+    except KeyError:
+        teamId = None
+    try:
+        teamName = dic["teamName"]
+    except KeyError:
+        teamName = None
+    try:
+        room = dic["room"]
+    except KeyError:
+        room = None
+    try:
+        startTimeSeconds = dic["startTimeSeconds"]
+    except KeyError:
+        startTimeSeconds = None
+
     members = [_to_member(i) for i in dic["members"]]
-    return Party(dic["contestId"], members, dic["participantType"], dic["teamId"], dic["teamName"], dic["ghost"],
-                 dic["room"], dic["startTimeSeconds"])
+    return Party(contestId, members, dic["participantType"], teamId, teamName, dic["ghost"], room, startTimeSeconds)
 
 
 def _to_problem(dic):
-    return Problem(dic["contestId"], dic["problemsetName"], dic["index"], dic["name"], dic["type"], dic["points"],
-                   dic["rating"], dic["tags"])
+    try:
+        contestId = dic["contestId"]
+    except KeyError:
+        contestId = None
+    try:
+        problemsetName = dic["problemsetName"]
+    except KeyError:
+        problemsetName = None
+    try:
+        points = dic["points"]
+    except KeyError:
+        points = None
+    try:
+        rating = dic["rating"]
+    except KeyError:
+        rating = None
+
+    return Problem(contestId, problemsetName, dic["index"], dic["name"], dic["type"], points, rating, dic["tags"])
 
 
 def _to_problem_result(dic):
@@ -60,7 +165,11 @@ def _to_problem_result(dic):
 
 
 def _to_problem_statistics(dic):
-    return ProblemStatistics(dic["contestId"], dic["index"], dic["solvedCount"])
+    try:
+        contestId = dic["contestId"]
+    except KeyError:
+        contestId = None
+    return ProblemStatistics(contestId, dic["index"], dic["solvedCount"])
 
 
 def _to_ranklist_row(dic):
@@ -75,21 +184,61 @@ def _to_rating_change(dic):
 
 
 def _to_recent_action(dic):
-    return RecentAction(dic["timeSeconds"], _to_blog_entry(dic["blogEntry"]), _to_comment(dic["comment"]))
+    try:
+        blogEntry = _to_blog_entry(dic["blogEntry"])
+    except KeyError:
+        blogEntry = None
+    try:
+        comment = _to_comment(dic["comment"])
+    except KeyError:
+        comment = None
+    return RecentAction(dic["timeSeconds"], blogEntry, comment)
 
 
 def _to_submission(dic):
-    return Submission(dic["id"], dic["contestId"], dic["creationTimeSeconds"], dic["relativeTimeSeconds"],
-                      _to_problem(dic["problem"]), _to_party(dic["author"]), dic["programmingLanguage"], dic["verdict"],
+    try:
+        contestId = dic["contestId"]
+    except KeyError:
+        contestId = None
+    try:
+        verdict = dic["verdict"]
+    except KeyError:
+        verdict = None
+    try:
+        points = dic["points"]
+    except KeyError:
+        points = None
+    return Submission(dic["id"], contestId, dic["creationTimeSeconds"], dic["relativeTimeSeconds"],
+                      _to_problem(dic["problem"]), _to_party(dic["author"]), dic["programmingLanguage"], verdict,
                       dic["testset"], dic["passedTestCount"], dic["timeConsumedMillis"], dic["memoryConsumedBytes"],
-                      dic["points"])
+                      points)
 
 
 def _to_user(dic):
-    return User(dic["handle"], dic["email"], dic["vkld"], dic["openId"], dic["firstName"], dic["lastName"],
-                dic["country"], dic["city"], dic["organization"], dic["contribution"], dic["rank"], dic["rating"],
-                dic["maxRank"], dic["maxRating"], dic["lastOnlineTimeSeconds"], dic["registrationTimeSeconds"],
-                dic["friendOfCount"], dic["avatar"], dic["titlePhoto"])
+    try:
+        firstName = dic["firstName"]
+    except KeyError:
+        firstName = None
+    try:
+        lastName = dic["lastName"]
+    except KeyError:
+        lastName = None
+    try:
+        country = dic["country"]
+    except KeyError:
+        country = None
+    try:
+        city = dic["city"]
+    except KeyError:
+        city = None
+    try:
+        organization = dic["organization"]
+    except KeyError:
+        organization = None
+    return User(dic["handle"], dic["email"], dic["vkld"], dic["openId"], firstName, lastName, country, city,
+                organization, dic["contribution"], dic["rank"], dic["rating"], dic["maxRank"], dic["maxRating"],
+                dic["lastOnlineTimeSeconds"], dic["registrationTimeSeconds"], dic["friendOfCount"], dic["avatar"],
+                dic["titlePhoto"])
 
 
 class Client(CodeForcesRequestMaker):

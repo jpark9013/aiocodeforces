@@ -7,7 +7,7 @@ from api.return_objects.problem import Problem
 
 
 @dataclass
-class _JudgeProtocol:
+class JudgeProtocol:
     manual: bool
     protocol: str
     verdict: str
@@ -24,7 +24,7 @@ class Hack:
     verdict: int  # Can be none. Read docs for full enum documentation.
     problem: Problem
     test: str  # Can be none.
-    judge_protocol: _JudgeProtocol  # Can be none.
+    judge_protocol: JudgeProtocol  # Can be none.
 
     def __eq__(self, other):
         return self.__eq__(other) and self.id == other.id

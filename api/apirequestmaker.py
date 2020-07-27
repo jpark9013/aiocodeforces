@@ -2,6 +2,7 @@ import asyncio
 import hashlib
 import json
 import random
+import re
 import time
 from collections import OrderedDict
 
@@ -13,16 +14,19 @@ class CodeForcesRequestMaker:
 
     _c = 0
     _anonymous = False
-    loop = asyncio.get_event_loop()
-
-    async def _session(self):
-        async with aiohttp.ClientSession() as session:
-            self._session = session
+    _own_loop = False
 
     def __init__(self, api_key=None, secret=None, rand=None):
         """Initialize api key, secret, and random number, which is default between 100,000 and 999,999 inclusive."""
 
-        self.loop.run_until_complete(self._session())
+        try:
+            self.loop = asyncio.get_running_loop()
+        except RuntimeError:
+            self.loop = asyncio.get_event_loop()
+            self.loop.run_forever()
+            self._own_loop = True
+
+        self._session = aiohttp.ClientSession()
 
         if not rand:
             self._rand = random.randint(0, 899999) + 100000
@@ -87,7 +91,7 @@ class CodeForcesRequestMaker:
             url.append(f"apiSig={self._rand}")
 
             # Extend this to url after doing hashing
-            apiSig = [str(self._rand) + "/", str(method) + "?"]
+            apiSig = [f"{self._rand}/{method}?"]
 
             for i, v, in fields.items():
                 apiSig.append(f"{i}=")
@@ -102,10 +106,9 @@ class CodeForcesRequestMaker:
 
             apiSig = apiSig[:-1]
             apiSig.append(f"#{self._secret}")
+            hash = hashlib.sha512(("".join(apiSig).encode("utf-8"))).hexdigest()
 
-            hash = hashlib.sha512(("".join(apiSig).encode("utf-8")))
-
-            url = f"{''.join(url)}apiSig={self._rand}{hash.hexdigest()}"
+            url = f"{''.join(url)}{hash}"
             return url
 
     def get_new_rand(self, rand=None):
@@ -152,3 +155,10 @@ class CodeForcesRequestMaker:
 
         if resp["status"] == "FAILED":
             raise Exception(f"Request failed: {resp['comment']}")
+
+    def stop(self):
+        """Stops the loop if it was automatically created by the module."""
+
+        if self._own_loop:
+            self.loop.stop()
+            self.loop.close()

@@ -12,12 +12,12 @@ class BlogEntry:
     creation_time_seconds: int
     author_handle: str
     title: str
-    content: str  # Can be none
     locale: str
     modification_time_seconds: int
     allow_view_history: bool
     tags: list  # Of strings
     rating: int
+    content: str = None
 
     def __eq__(self, other):
         return isinstance(other, BlogEntry) and self.id == other.id
