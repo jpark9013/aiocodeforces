@@ -54,7 +54,7 @@ class Client(CodeForcesRequestMaker):
         optional. The only required argument, contestID, is an int. The rest, startIndex, count, handles, room, and
         showUnofficial, are int, int, list, str, and boolean, respectively."""
 
-        kwargs = {}
+        kwargs = {"contestId": contestID}
         if startIndex:
             kwargs["from"] = startIndex
         if count:
@@ -78,7 +78,7 @@ class Client(CodeForcesRequestMaker):
         """Returns a list of submission objects. Takes in 4 arguments. contestID, an int, is the only required one. The
         rest, handle, startIndex, and count, are str, int, and int, respectively."""
 
-        kwargs = {}
+        kwargs = {"contestId": contestID}
         if handle:
             kwargs["handle"] = handle
         if startIndex:
@@ -168,7 +168,7 @@ class Client(CodeForcesRequestMaker):
         """Returns a list of Submission objects from the user, sorted decreasing by ID. Required arguments: user handle,
         str. Optional arguments: startIndex, count."""
 
-        kwargs = {}
+        kwargs = {"handle": handle}
         if startIndex:
             kwargs["startIndex"] = startIndex
         if count:
