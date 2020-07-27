@@ -22,4 +22,3 @@ async def main():
 
 
 loop.run_until_complete(main())
-loop.close()

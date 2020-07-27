@@ -1,10 +1,13 @@
 """The Problem class for the CodeForces API."""
 
+from api.apirequestmaker import strip_dict
+
 
 class Problem:
     """https://codeforces.com/apiHelp/objects#Problem"""
 
     def __init__(self, dic):
+        strip_dict(dic)
         self.contest_id: int = dic.get("contestId")  # Can be none
         self.problemset_name: str = dic.get("problemsetName")  # Can be none
         self.index: str = dic["index"]

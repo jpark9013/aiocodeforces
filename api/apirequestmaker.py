@@ -4,9 +4,41 @@ import json
 import random
 import re
 import time
+from abc import ABC
 from collections import OrderedDict
+from io import StringIO
+from html.parser import HTMLParser
 
 import aiohttp
+
+
+# THX https://stackoverflow.com/questions/753052/strip-html-from-strings-in-python
+class _MLStripper(HTMLParser, ABC):
+    def __init__(self):
+        super().__init__()
+        self.reset()
+        self.strict = False
+        self.convert_charrefs = True
+        self.text = StringIO()
+
+    def handle_data(self, d):
+        self.text.write(d)
+
+    def get_data(self):
+        return self.text.getvalue()
+
+
+def _strip_tags(html):
+    s = _MLStripper()
+    s.feed(html)
+    return s.get_data()
+
+
+def strip_dict(dic):
+    if striphtml:
+        for k in dic.keys():
+            if isinstance(dic[k], str):
+                dic[k] = _strip_tags(dic[k])
 
 
 class CodeForcesRequestMaker:
@@ -16,7 +48,7 @@ class CodeForcesRequestMaker:
     _anonymous = False
     _own_loop = False
 
-    def __init__(self, api_key=None, secret=None, rand=None):
+    def __init__(self, api_key=None, secret=None, rand=None, strip_html=True):
         """Initialize api key, secret, and random number, which is default between 100,000 and 999,999 inclusive."""
 
         try:
@@ -44,6 +76,9 @@ class CodeForcesRequestMaker:
         else:
             self._api_key = api_key
             self._secret = secret
+
+        global striphtml
+        striphtml = strip_html
 
     def _get_url(self, method, **fields):
         """Get URL from method and fields. Example URL:

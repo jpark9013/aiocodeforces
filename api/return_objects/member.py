@@ -1,10 +1,13 @@
 """The Member class of the CodeForces API."""
 
+from api.apirequestmaker import strip_dict
+
 
 class Member:
     """https://codeforces.com/apiHelp/objects#Member"""
 
     def __init__(self, dic):
+        strip_dict(dic)
         self.handle: str = dic["handle"]
 
     def __eq__(self, other):

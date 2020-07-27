@@ -1,5 +1,6 @@
 """The RanklistRow class for the CodeForces API."""
 
+from api.apirequestmaker import strip_dict
 from api.return_objects.party import Party
 from api.return_objects.problem_result import ProblemResult
 
@@ -8,6 +9,7 @@ class RanklistRow:
     """https://codeforces.com/apiHelp/objects#RanklistRow"""
 
     def __init__(self, dic):
+        strip_dict(dic)
         self.party: Party = Party(dic["party"])
         self.rank: int = dic["rank"]
         self.points: float = dic["points"]

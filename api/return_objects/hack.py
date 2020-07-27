@@ -1,5 +1,6 @@
 """The Hack class for the CodeForces API."""
 
+from api.apirequestmaker import strip_dict
 from api.return_objects.party import Party
 from api.return_objects.problem import Problem
 
@@ -15,6 +16,7 @@ class Hack:
     """https://codeforces.com/apiHelp/objects#Hack"""
 
     def __init__(self, dic):
+        strip_dict(dic)
         self.id: int = dic["id"]
         self.creation_time_seconds: int = dic["creationTimeSeconds"]
         self.hacker: Party = Party(dic["hacker"])
