@@ -7,17 +7,18 @@ from dataclasses import dataclass
 class BlogEntry:
     """https://codeforces.com/apiHelp/objects#BlogEntry"""
 
-    id: int
-    original_locale: str
-    creation_time_seconds: int
-    author_handle: str
-    title: str
-    locale: str
-    modification_time_seconds: int
-    allow_view_history: bool
-    tags: list  # Of strings
-    rating: int
-    content: str = None
+    def __init__(self, dic):
+        self.id: int = dic["id"]
+        self.original_locale: str = dic["originalLocale"]
+        self.creation_time_seconds: int = dic["creationTimeSeconds"]
+        self.author_handle: str = dic["authorHandle"]
+        self.title: str = dic["title"]
+        self.locale: str = dic["locale"]
+        self.modification_time_seconds: int = dic["modificationTimeSeconds"]
+        self.allow_view_history: bool = dic["allowViewHistory"]
+        self.tags: list = dic["tags"]  # Of strings
+        self.rating: int = dic["rating"]
+        self.content: str = dic.get("content")
 
     def __eq__(self, other):
         return isinstance(other, BlogEntry) and self.id == other.id

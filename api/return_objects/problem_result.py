@@ -1,14 +1,12 @@
 """The ProblemResult class for the CodeForces API."""
 
-from dataclasses import dataclass
 
-
-@dataclass
 class ProblemResult:
     """https://codeforces.com/apiHelp/objects#ProblemResult"""
 
-    points: float
-    penalty: int
-    rejected_attempt_count: int
-    type: int  # Enum: PRELIMINARY, FINAL
-    best_submission_time_seconds: int
+    def __init__(self, dic):
+        self.points: float = dic["points"]
+        self.penalty: int = dic["penalty"]
+        self.rejected_attempt_count: int = dic["rejectedAttemptCount"]
+        self.type: int = dic["type"]  # Enum: PRELIMINARY, FINAL
+        self.best_submission_time_seconds: int = dic["bestSubmissionTimeSeconds"]

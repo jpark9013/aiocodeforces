@@ -7,25 +7,26 @@ from dataclasses import dataclass
 class User:
     """https://codeforces.com/apiHelp/objects#User"""
 
-    handle: str
-    email: str  # Can be none
-    vlkd: str  # Can be none
-    open_id: str  # Can be none
-    first_name: str  # Can be none
-    last_name: str  # Can be none
-    country: str  # Can be none
-    city: str  # Can be none
-    organization: str  # Can be none
-    contribution: int
-    rank: str
-    rating: int
-    max_rank: str
-    max_rating: int
-    last_online_time_seconds: int
-    registration_time_seconds: int
-    friend_of_count: int
-    avatar: str
-    title_photo: str
+    def __init__(self, dic):
+        self.handle: str = dic["handle"]
+        self.email: str = dic.get("email")  # Can be none
+        self.vlkd: str = dic.get("vlkd") # Can be none
+        self.open_id: str = dic.get("openId")  # Can be none
+        self.first_name: str = dic.get("firstName")  # Can be none
+        self.last_name: str = dic.get("lastName")  # Can be none
+        self.country: str = dic.get("country")  # Can be none
+        self.city: str = dic.get("city")  # Can be none
+        self.organization: str = dic.get("organization")  # Can be none
+        self.contribution: int = dic["contribution"]
+        self.rank: str = dic["rank"]
+        self.rating: int = dic["rating"]
+        self.max_rank: str = dic["maxRank"]
+        self.max_rating: int = dic["maxRating"]
+        self.last_online_time_seconds: int = dic["lastOnlineTimeSeconds"]
+        self.registration_time_seconds: int = dic["registrationTimeSeconds"]
+        self.friend_of_count: int = dic["friendOfCount"]
+        self.avatar: str = dic["avatar"]
+        self.title_photo: str = dic["titlePhoto"]
 
     def __eq__(self, other):
         return isinstance(other, User) and self.handle == other.handle

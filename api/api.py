@@ -17,96 +17,6 @@ from api.return_objects.submission import Submission
 from api.return_objects.user import User
 
 
-def _to_blog_entry(dic):
-    return BlogEntry(dic["id"], dic["originalLocale"], dic["creationTimeSeconds"], dic["authorHandle"], dic["title"],
-                     dic["locale"], dic["modificationTimeSeconds"], dic["allowViewHistory"],
-                     dic["tags"], dic["rating"], dic.get("content"))
-
-
-def _to_comment(dic):
-    return Comment(dic["id"], dic["creationTimeSeconds"], dic["commentatorHandle"], dic["locale"], dic["text"],
-                   dic.get("parentCommentId"), dic["rating"])
-
-
-def _to_contest(dic):
-    return Contest(dic["id"], dic["name"], dic["type"], dic["phase"], dic["frozen"], dic["durationSeconds"],
-                   dic.get("startTimeSeconds"), dic.get("relativeTimeSeconds"), dic.get("preparedBy"),
-                   dic.get("websiteUrl"), dic.get("description"), dic.get("difficulty"), dic.get("kind"),
-                   dic.get("icpcRegion"), dic.get("country"), dic.get("city"), dic.get("season"))
-
-
-def _to_hack(dic):
-    try:
-        d = dic["judgeProtocol"]
-        judgeProtocol = JudgeProtocol(d["manual"], d["protocol"], d["verdict"])
-    except KeyError:
-        judgeProtocol = None
-
-    return Hack(dic["id"], dic["creationTimeSeconds"], _to_party(dic["hacker"]), _to_party(dic["defender"]),
-                dic.get("verdict"), _to_problem(dic["problem"]), dic.get("test"), judgeProtocol)
-
-
-def _to_member(dic):
-    return Member(dic["handle"])
-
-
-def _to_party(dic):
-    members = [_to_member(i) for i in dic["members"]]
-    return Party(dic.get("contestId"), members, dic["participantType"], dic.get("teamId"), dic.get("teamName"),
-                 dic["ghost"], dic.get("room"), dic.get("startTimeSeconds"))
-
-
-def _to_problem(dic):
-    return Problem(dic.get("contestId"), dic.get("problemsetName"), dic["index"], dic["name"], dic["type"],
-                   dic.get("points"), dic.get("rating"), dic["tags"])
-
-
-def _to_problem_result(dic):
-    return ProblemResult(dic["points"], dic["penalty"], dic["rejectedAttemptCount"], dic["type"],
-                         dic["bestSubmissionTimeSeconds"])
-
-
-def _to_problem_statistics(dic):
-    return ProblemStatistics(dic.get("contestId"), dic["index"], dic["solvedCount"])
-
-
-def _to_ranklist_row(dic):
-    problem_results = [_to_problem_result(i) for i in dic["problemResults"]]
-    return RanklistRow(_to_party(dic["party"]), dic["rank"], dic["points"], dic["penalty"], dic["successfulHackCount"],
-                       dic["unsuccessfulHackCount"], problem_results, dic["lastSubmissionTimeSeconds"])
-
-
-def _to_rating_change(dic):
-    return RatingChange(dic["contestId"], dic["contestName"], dic["handle"], dic["rank"],
-                        dic["ratingUpdateTimeSeconds"], dic["oldRating"], dic["newRating"])
-
-
-def _to_recent_action(dic):
-    try:
-        blogEntry = _to_blog_entry(dic["blogEntry"])
-    except KeyError:
-        blogEntry = None
-    try:
-        comment = _to_comment(dic["comment"])
-    except KeyError:
-        comment = None
-    return RecentAction(dic["timeSeconds"], blogEntry, comment)
-
-
-def _to_submission(dic):
-    return Submission(dic["id"], dic.get("contestId"), dic["creationTimeSeconds"], dic["relativeTimeSeconds"],
-                      _to_problem(dic["problem"]), _to_party(dic["author"]), dic["programmingLanguage"],
-                      dic.get("verdict"), dic["testset"], dic["passedTestCount"], dic["timeConsumedMillis"],
-                      dic["memoryConsumedBytes"], dic.get("points"))
-
-
-def _to_user(dic):
-    return User(dic["handle"], dic["email"], dic["vkld"], dic["openId"], dic.get("firstName"), dic.get("lastName"),
-                dic.get("country"), dic.get("city"), dic.get("organization"), dic["contribution"], dic["rank"],
-                dic["rating"], dic["maxRank"], dic["maxRating"], dic["lastOnlineTimeSeconds"],
-                dic["registrationTimeSeconds"], dic["friendOfCount"], dic["avatar"], dic["titlePhoto"])
-
-
 class Client(CodeForcesRequestMaker):
     """The main Client for making requests through the CF API."""
 
@@ -114,32 +24,32 @@ class Client(CodeForcesRequestMaker):
         """Gets a list of comment objects. Takes in one argument, ID, which is an int."""
 
         result = await self._get_result("blogEntry.comments", blogEntryId=ID)
-        return [_to_comment(i) for i in result]
+        return [Comment(i) for i in result]
 
     async def view_blog_entry(self, ID):
         """Get a BlogEntry object. Takes in one argument, ID, which is an int."""
 
         result = await self._get_result("blogEntry.view", blogEntryId=ID)
-        return _to_blog_entry(result)
+        return BlogEntry(result)
 
     async def get_contest_hacks(self, contestID):
         """Get a list of Hack objects. Takes in one argument, contestID, which is an int."""
 
         result = await self._get_result("contest.hacks", contestId=contestID)
-        return _to_hack(result)
+        return Hack(result)
 
     async def get_contest_list(self, gym=False):
         """Returns a list of all avaliable contests. Takes in one argument, gym, which is a boolean. Defaults to
         false."""
 
         result = await self._get_result("contest.list", gym=gym)
-        return [_to_contest(i) for i in result]
+        return [Contest(i) for i in result]
 
     async def get_contest_rating_changes(self, contestID):
         """Returns a list of RatingChange objects. Takes in one argument, contestID, which is an int."""
 
         result = await self._get_result("contest.ratingChanges", contestId=contestID)
-        return [_to_rating_change(i) for i in result]
+        return [RatingChange(i) for i in result]
 
     async def get_contest_standings(self, contestID, startIndex=None, count=None, handles=None, room=None,
                                     showUnofficial=None):
@@ -162,9 +72,9 @@ class Client(CodeForcesRequestMaker):
 
         result = await self._get_result("contest.standings", **kwargs)
 
-        result["contest"] = _to_contest(result["contest"])
-        result["problems"] = [_to_problem(i) for i in result["problems"]]
-        result["rows"] = [_to_ranklist_row(i) for i in result["rows"]]
+        result["contest"] = Contest(result["contest"])
+        result["problems"] = [Problem(i) for i in result["problems"]]
+        result["rows"] = [RanklistRow(i) for i in result["rows"]]
 
         return result
 
@@ -181,7 +91,7 @@ class Client(CodeForcesRequestMaker):
             kwargs["count"] = count
 
         result = await self._get_result("contest.status", **kwargs)
-        return [_to_submission(i) for i in result]
+        return [Submission(i) for i in result]
 
     async def get_problems(self, tags=None, problemsetName=None):
         """Returns a tuple of two lists from a problemset. The first list of Problems, and the second is the list of
@@ -195,8 +105,8 @@ class Client(CodeForcesRequestMaker):
             kwargs["problemsetName"] = problemsetName
 
         result = await self._get_result("problemset.problems", **kwargs)
-        result[0] = [_to_problem(i) for i in result[0]]
-        result[1] = [_to_problem_statistics(i) for i in result[1]]
+        result[0] = [Problem(i) for i in result[0]]
+        result[1] = [ProblemStatistics(i) for i in result[1]]
 
         return result
 
@@ -211,20 +121,20 @@ class Client(CodeForcesRequestMaker):
             kwargs["problemsetName"] = problemsetName
 
         result = await self._get_result("problemset.recentStatus", **kwargs)
-        return [_to_submission(i) for i in result]
+        return [Submission(i) for i in result]
 
     async def get_recent_actions(self, maxCount=10):
         """Returns a list of RecentAction objects. Defaults to 10, use argument maxCount to change."""
 
         result = await self._get_result("recentActions", maxCount=maxCount)
-        return [_to_recent_action(i) for i in result]
+        return [RecentAction(i) for i in result]
 
     async def get_blog_entries(self, handle):
         """Returns a list of BlogEntry objects from a user. Takes in one required argument, handle, which is a
         string."""
 
         result = await self._get_result("user.blogEntries", handle=handle)
-        return [_to_blog_entry(i) for i in result]
+        return [BlogEntry(i) for i in result]
 
     async def get_friends(self, onlyOnline=False):
         """Returns a list of friends's handles from the authorized user. Takes in one argument, onlyOnline, which
@@ -241,7 +151,7 @@ class Client(CodeForcesRequestMaker):
         handles."""
 
         result = await self._get_result("user.friends", handles=handles)
-        return [_to_user(i) for i in result]
+        return [User(i) for i in result]
 
     async def get_rated_users(self, activeOnly=True):
         """Returns a list of users who are rated (have participated in at least one contest). Takes in an argument,
@@ -250,13 +160,13 @@ class Client(CodeForcesRequestMaker):
         it."""
 
         result = await self._get_result("user.ratedList", activeOnly=activeOnly)
-        return [_to_user(i) for i in result]
+        return [User(i) for i in result]
 
     async def get_rating(self, handle):
         """Returns a list of RatingChange objects for the user. Required argument is a user handle, which is str."""
 
         result = await self._get_result("user.rating", handle=handle)
-        return [_to_rating_change(i) for i in result]
+        return [RatingChange(i) for i in result]
 
     async def get_submissions(self, handle, startIndex=None, count=None):
         """Returns a list of Submission objects from the user, sorted decreasing by ID. Required arguments: user handle,
@@ -269,4 +179,4 @@ class Client(CodeForcesRequestMaker):
             kwargs["count"] = count
 
         result = await self._get_result("user.status", **kwargs)
-        return [_to_submission(i) for i in result]
+        return [Submission(i) for i in result]

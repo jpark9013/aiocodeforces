@@ -10,19 +10,20 @@ from api.return_objects.problem import Problem
 class Submission:
     """https://codeforces.com/apiHelp/objects#Submission"""
 
-    id: int
-    contest_id: int
-    creation_time_seconds: int
-    relative_time_seconds: int
-    problem: Problem
-    author: Party
-    programming_language: str
-    verdict: int  # Can be none, read CF API docs for full enum
-    testset: int  # Enum: SAMPLES, PRETESTS, TESTS, CHALLENGES, TESTS1, ..., TESTS10.
-    passed_test_count: int
-    time_consumed_millis: int
-    memory_consumed_bytes: int
-    points: float
+    def __init__(self, dic):
+        self.id: int = dic["id"]
+        self.contest_id: int = dic["contestId"]
+        self.creation_time_seconds: int = dic["creationTimeSeconds"]
+        self.relative_time_seconds: int = dic["relativeTimeSeconds"]
+        self.problem: Problem = Problem(dic["problem"])
+        self.author: Party = Party(dic["author"])
+        self.programming_language: str = dic["programmingLanguage"]
+        self.verdict: int = dic.get("verdict")  # Can be none, read CF API docs for full enum
+        self.testset: int = dic["testset"]  # Enum: SAMPLES, PRETESTS, TESTS, CHALLENGES, TESTS1, ..., TESTS10.
+        self.passed_test_count: int = dic["passedTestCount"]
+        self.time_consumed_millis: int = dic["timeConsumedMillis"]
+        self.memory_consumed_bytes: int = dic["memoryConsumedBytes"]
+        self.points: float = dic["points"]
 
     def __eq__(self, other):
         return isinstance(other, Submission) and self.id == other.id

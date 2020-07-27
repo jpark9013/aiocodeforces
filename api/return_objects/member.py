@@ -1,13 +1,11 @@
 """The Member class of the CodeForces API."""
 
-from dataclasses import dataclass
 
-
-@dataclass
 class Member:
     """https://codeforces.com/apiHelp/objects#Member"""
 
-    handle: str
+    def __init__(self, dic):
+        self.handle: str = dic["handle"]
 
     def __eq__(self, other):
         return isinstance(other, Member) and self.handle == other.handle

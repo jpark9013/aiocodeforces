@@ -7,13 +7,14 @@ from dataclasses import dataclass
 class RatingChange:
     """https://codeforces.com/apiHelp/objects#RatingChange"""
 
-    contest_id: int
-    contest_name: str
-    handle: str
-    rank: int
-    rating_update_time_seconds: int
-    old_rating: int
-    new_rating: int
+    def __init__(self, dic):
+        self.contest_id: int = dic["contestId"]
+        self.contest_name: str = dic["contestName"]
+        self.handle: str = dic["handle"]
+        self.rank: int = dic["rank"]
+        self.rating_update_time_seconds: int = dic["ratingUpdateTimeSeconds"]
+        self.old_rating: int = dic["oldRating"]
+        self.new_rating: int = dic["newRating"]
 
     def __eq__(self, other):
         return isinstance(other, RatingChange) and self.contest_id == other.contest_id and self.handle == other.handle
