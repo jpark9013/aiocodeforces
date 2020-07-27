@@ -9,7 +9,7 @@ class RanklistRow:
     """https://codeforces.com/apiHelp/objects#RanklistRow"""
 
     def __init__(self, dic):
-        strip_dict(dic)
+        dic = strip_dict(dic)
         self.party: Party = Party(dic["party"])
         self.rank: int = dic["rank"]
         self.points: float = dic["points"]

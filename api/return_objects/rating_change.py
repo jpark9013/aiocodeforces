@@ -7,7 +7,7 @@ class RatingChange:
     """https://codeforces.com/apiHelp/objects#RatingChange"""
 
     def __init__(self, dic):
-        strip_dict(dic)
+        dic = strip_dict(dic)
         self.contest_id: int = dic["contestId"]
         self.contest_name: str = dic["contestName"]
         self.handle: str = dic["handle"]

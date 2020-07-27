@@ -36,9 +36,16 @@ def _strip_tags(html):
 
 def strip_dict(dic):
     if striphtml:
-        for k in dic.keys():
-            if isinstance(dic[k], str):
-                dic[k] = _strip_tags(dic[k])
+        if isinstance(dic, dict):
+            for k in dic.keys():
+                dic[k] = strip_dict(dic[k])
+        elif isinstance(dic, list):
+            for i, v in enumerate(dic):
+                dic[i] = strip_dict(v)
+        elif isinstance(dic, str):
+            dic = _strip_tags(dic)
+
+    return dic
 
 
 class CodeForcesRequestMaker:

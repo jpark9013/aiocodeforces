@@ -7,7 +7,7 @@ class User:
     """https://codeforces.com/apiHelp/objects#User"""
 
     def __init__(self, dic):
-        strip_dict(dic)
+        dic = strip_dict(dic)
         self.handle: str = dic["handle"]
         self.email: str = dic.get("email")  # Can be none
         self.vlkd: str = dic.get("vlkd") # Can be none

@@ -7,7 +7,7 @@ class Contest:
     """https://codeforces.com/apiHelp/objects#Contest"""
 
     def __init__(self, dic):
-        strip_dict(dic)
+        dic = strip_dict(dic)
         self.id: int = dic["id"]
         self.name: str = dic["name"]
         self.type: int = dic["type"]  # Enum: CF, IOI, ICPC. Scoring system used for the contest.

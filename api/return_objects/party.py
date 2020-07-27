@@ -8,7 +8,7 @@ class Party:
     """https://codeforces.com/apiHelp/objects#Party"""
 
     def __init__(self, dic):
-        strip_dict(dic)
+        dic = strip_dict(dic)
         self.contest_id: int = dic["contestId"]
         self.members: list = [Member(i) for i in dic["members"]]  # of Members
         self.participant_type: int = dic["participantType"]  # Enum: CONTESTANT, PRACTICE, VIRTUAL, MANAGER,

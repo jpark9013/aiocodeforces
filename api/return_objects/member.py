@@ -7,7 +7,7 @@ class Member:
     """https://codeforces.com/apiHelp/objects#Member"""
 
     def __init__(self, dic):
-        strip_dict(dic)
+        dic = strip_dict(dic)
         self.handle: str = dic["handle"]
 
     def __eq__(self, other):

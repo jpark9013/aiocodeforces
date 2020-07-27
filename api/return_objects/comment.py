@@ -7,7 +7,7 @@ class Comment:
     """https://codeforces.com/apiHelp/objects#Comment"""
 
     def __init__(self, dic):
-        strip_dict(dic)
+        dic = strip_dict(dic)
         self.id: int = dic["id"]
         self.creation_time_seconds: int = dic["creationTimeSeconds"]
         self.commentator_handle: str = dic["commentatorHandle"]

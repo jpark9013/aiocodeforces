@@ -19,6 +19,14 @@ async def main():
     a = await client.get_blog_entry_comments(78777)
     for comment in a:
         print(comment.text)
+    a = await client.get_recent_actions()
+    for i in a:
+        try:
+            print(i.blog_entry.content)
+            print(i.comment.text)
+        except AttributeError:
+            print("No attribute text")
+            pass
 
 
 loop.run_until_complete(main())

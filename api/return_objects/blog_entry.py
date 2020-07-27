@@ -7,7 +7,7 @@ class BlogEntry:
     """https://codeforces.com/apiHelp/objects#BlogEntry"""
 
     def __init__(self, dic):
-        strip_dict(dic)
+        dic = strip_dict(dic)
         self.id: int = dic["id"]
         self.original_locale: str = dic["originalLocale"]
         self.creation_time_seconds: int = dic["creationTimeSeconds"]

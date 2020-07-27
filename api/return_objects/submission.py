@@ -9,7 +9,7 @@ class Submission:
     """https://codeforces.com/apiHelp/objects#Submission"""
 
     def __init__(self, dic):
-        strip_dict(dic)
+        dic = strip_dict(dic)
         self.id: int = dic["id"]
         self.contest_id: int = dic["contestId"]
         self.creation_time_seconds: int = dic["creationTimeSeconds"]

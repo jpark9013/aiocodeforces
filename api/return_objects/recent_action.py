@@ -12,6 +12,6 @@ class RecentAction:
     def __init__(self, dic):
         strip_dict(dic)
         self.time_seconds: int = dic["timeSeconds"]
-        self.blog_entry: BlogEntry = BlogEntry(dic["blogEntry"])
-        self.comment: Comment = Comment(dic["comment"])
+        self.blog_entry: BlogEntry = BlogEntry(dic.get("blogEntry")) if dic.get("blogEntry") else None
+        self.comment: Comment = Comment(dic.get("comment")) if dic.get("comment") else None
 

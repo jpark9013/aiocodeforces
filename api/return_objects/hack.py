@@ -16,7 +16,7 @@ class Hack:
     """https://codeforces.com/apiHelp/objects#Hack"""
 
     def __init__(self, dic):
-        strip_dict(dic)
+        dic = strip_dict(dic)
         self.id: int = dic["id"]
         self.creation_time_seconds: int = dic["creationTimeSeconds"]
         self.hacker: Party = Party(dic["hacker"])
