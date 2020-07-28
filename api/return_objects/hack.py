@@ -6,6 +6,9 @@ from api.return_objects.problem import Problem
 
 
 class JudgeProtocol:
+
+    __slots__ = ["manual", "protocol", "verdict"]
+
     def __init__(self, dic):
         self.manual: bool = dic["manual"]
         self.protocol: str = dic["protocol"]
@@ -14,6 +17,8 @@ class JudgeProtocol:
 
 class Hack:
     """https://codeforces.com/apiHelp/objects#Hack"""
+
+    __slots__ = ["id", "creation_time_seconds", "hacker", "defender", "verdict", "problem", "test", "judge_protocol"]
 
     def __init__(self, dic):
         dic = strip_dict(dic)

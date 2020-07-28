@@ -8,6 +8,10 @@ from api.return_objects.problem import Problem
 class Submission:
     """https://codeforces.com/apiHelp/objects#Submission"""
 
+    __slots__ = ["id", "contest_id", "creation_time_seconds", "relative_time_seconds", "problem", "author",
+                 "programming_language", "verdict", "testset", "passed_test_count", "time_consumed_millis",
+                 "memory_consumed_bytes", "points"]
+
     def __init__(self, dic):
         dic = strip_dict(dic)
         self.id: int = dic["id"]

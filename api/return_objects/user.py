@@ -6,6 +6,10 @@ from api.apirequestmaker import strip_dict
 class User:
     """https://codeforces.com/apiHelp/objects#User"""
 
+    __slots__ = ["handle", "email", "vlkd", "open_id", "first_name", "last_name", "country", "city", "organization",
+                 "contribution", "rank", "rating", "max_rank", "max_rating", "last_online_time_seconds",
+                 "registration_time_seconds", "friend_of_count", "avatar", "title_photo"]
+
     def __init__(self, dic):
         dic = strip_dict(dic)
         self.handle: str = dic["handle"]

@@ -7,6 +7,9 @@ from api.return_objects.member import Member
 class Party:
     """https://codeforces.com/apiHelp/objects#Party"""
 
+    __slots__ = ["contest_id", "members", "participant_type", "team_id", "team_name", "ghost", "room",
+                 "start_time_seconds"]
+
     def __init__(self, dic):
         dic = strip_dict(dic)
         self.contest_id: int = dic["contestId"]

@@ -6,6 +6,10 @@ from api.apirequestmaker import strip_dict
 class Contest:
     """https://codeforces.com/apiHelp/objects#Contest"""
 
+    __slots__ = ["id", "name", "type", "phase", "frozen", "duration_seconds", "start_time_seconds",
+                 "relative_time_seconds", "prepared_by", "website_url", "description", "difficulty", "kind",
+                 "icpc_region", "country", "city", "season"]
+
     def __init__(self, dic):
         dic = strip_dict(dic)
         self.id: int = dic["id"]

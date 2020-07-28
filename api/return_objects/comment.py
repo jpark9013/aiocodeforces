@@ -6,6 +6,8 @@ from api.apirequestmaker import strip_dict
 class Comment:
     """https://codeforces.com/apiHelp/objects#Comment"""
 
+    __slots__ = ["id", "creation_time_seconds", "commentator_handle", "locale", "text", "parent_comment_id", "rating"]
+
     def __init__(self, dic):
         dic = strip_dict(dic)
         self.id: int = dic["id"]

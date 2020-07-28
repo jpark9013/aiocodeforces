@@ -6,6 +6,8 @@ from api.apirequestmaker import strip_dict
 class Problem:
     """https://codeforces.com/apiHelp/objects#Problem"""
 
+    __slots__ = ["contest_id", "problemset_name", "index", "name", "type", "points", "rating", "tags"]
+
     def __init__(self, dic):
         dic = strip_dict(dic)
         self.contest_id: int = dic.get("contestId")  # Can be none

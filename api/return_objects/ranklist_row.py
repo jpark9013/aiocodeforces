@@ -8,6 +8,9 @@ from api.return_objects.problem_result import ProblemResult
 class RanklistRow:
     """https://codeforces.com/apiHelp/objects#RanklistRow"""
 
+    __slots__ = ["party", "rank", "points", "penalty", "successful_hack_count", "unsuccessful_hack_count",
+                 "problem_results", "last_submission_time_seconds"]
+
     def __init__(self, dic):
         dic = strip_dict(dic)
         self.party: Party = Party(dic["party"])

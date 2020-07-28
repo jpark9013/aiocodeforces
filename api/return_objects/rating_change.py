@@ -6,6 +6,9 @@ from api.apirequestmaker import strip_dict
 class RatingChange:
     """https://codeforces.com/apiHelp/objects#RatingChange"""
 
+    __slots__ = ["contest_id", "contest_name", "handle", "rank", "rating_update_time_seconds", "old_rating",
+                 "new_rating"]
+
     def __init__(self, dic):
         dic = strip_dict(dic)
         self.contest_id: int = dic["contestId"]

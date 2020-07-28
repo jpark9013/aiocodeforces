@@ -6,6 +6,9 @@ from api.apirequestmaker import strip_dict
 class BlogEntry:
     """https://codeforces.com/apiHelp/objects#BlogEntry"""
 
+    __slots__ = ["id", "original_locale", "creation_time_seconds", "author_handle", "title", "locale",
+                 "modification_time_seconds", "allow_view_history", "tags", "rating", "content"]
+
     def __init__(self, dic):
         dic = strip_dict(dic)
         self.id: int = dic["id"]
