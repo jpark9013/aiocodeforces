@@ -14,7 +14,19 @@ from api.return_objects.user import User
 
 
 class Client(CodeForcesRequestMaker):
-    """The main Client for making requests through the CF API."""
+    """Represents a Client to make requests to the CodeForces API through.
+
+    Parameters
+    -----------
+    api_key: Optional[:class:`int`]
+        The API key to send requests to CodeForces API.
+    secret: Optional[:class:`int`]
+        The secret to send requests to CodeForces API.
+    rand: Optional[:class:`int`]
+        The random number to send requests to CodeForces API. Takes in a 6-digit integer, defaults to None.
+    strip_html: Optional[:class:`bool`]
+        Whether the library should parse out the HTML tags or not. Defaults to True.
+    """
 
     async def get_blog_entry_comments(self, ID):
         """Gets a list of comment objects. Takes in one argument, ID, which is an int."""

@@ -7,7 +7,18 @@ from api.return_objects.comment import Comment
 
 
 class RecentAction:
-    """https://codeforces.com/apiHelp/objects#RecentAction"""
+    """
+    Represents a recent action on CodeForces.
+
+    Attributes
+    -----------
+    time_seconds: :class:``int``
+        The time, in UNIX format, of the recent action.
+    blog_entry: :class:``BlogEntry``
+        The Blog Entry submission. Can be ``None``.
+    comment: :class:``Comment``
+        The comment submission. Can be ``None``.
+    """
 
     __slots__ = ["time_seconds", "blog_entry", "comment"]
 

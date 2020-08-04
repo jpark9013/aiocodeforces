@@ -4,7 +4,28 @@ from api.apirequestmaker import strip_dict
 
 
 class ProblemStatistics:
-    """https://codeforces.com/apiHelp/objects#ProblemStatistics"""
+    """
+    Represents a Problem Statistic on CodeForces.
+
+    ..container:: operations
+
+        ..describe:: x == y
+
+            Checks if two ProblemStatistics are equal.
+
+        ..describe: x != y
+
+            Checks if two ProblemStatistics are not equal.
+
+    Attributes
+    -----------
+    contest_id: :class:``int``
+        The ID of the contest for the ProblemStatistic. Can be ``None``.
+    index: :class:``str``
+        The index of the problem for the ProblemStatistic.
+    solved_count: :class:``int``
+        The number of users who solved the problem.
+    """
 
     __slots__ = ["contest_id", "index", "solved_count"]
 

@@ -4,7 +4,23 @@ from api.apirequestmaker import strip_dict
 
 
 class Member:
-    """https://codeforces.com/apiHelp/objects#Member"""
+    """Represents a Member on CodeForces.
+
+    ..container:: operations
+
+        ..describe:: x == y
+
+            Checks if two Members are equal.
+
+        ..describe:: x != y
+
+            Checks if two Members are not equal.
+
+    Attributes
+    -----------
+    handle: :class:``str``
+        The handle of the Member.
+    """
 
     __slots__ = ["handle"]
 
