@@ -1,6 +1,6 @@
 import asyncio
 
-from api.api import Client
+from aiocodeforces.client import Client
 
 with open("config.txt", "r") as f:
     key = f.readline()[:-1]
@@ -26,7 +26,6 @@ async def main():
             print(i.comment.text)
         except AttributeError:
             print("No attribute text")
-            pass
 
 
 loop.run_until_complete(main())

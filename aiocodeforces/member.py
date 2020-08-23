@@ -1,7 +1,5 @@
 """The Member class of the CodeForces API."""
 
-from api.apirequestmaker import strip_dict
-
 
 class Member:
     """Represents a Member on CodeForces.
@@ -25,7 +23,6 @@ class Member:
     __slots__ = ["handle"]
 
     def __init__(self, dic):
-        dic = strip_dict(dic)
         self.handle: str = dic["handle"]
 
     def __eq__(self, other):

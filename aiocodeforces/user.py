@@ -1,7 +1,5 @@
 """The User class for the CodeForces API."""
 
-from api.apirequestmaker import strip_dict
-
 
 class User:
     """
@@ -64,10 +62,9 @@ class User:
                  "registration_time_seconds", "friend_of_count", "avatar", "title_photo"]
 
     def __init__(self, dic):
-        dic = strip_dict(dic)
         self.handle: str = dic["handle"]
         self.email: str = dic.get("email")  # Can be none
-        self.vlkd: str = dic.get("vlkd") # Can be none
+        self.vlkd: str = dic.get("vlkd")  # Can be none
         self.open_id: str = dic.get("openId")  # Can be none
         self.first_name: str = dic.get("firstName")  # Can be none
         self.last_name: str = dic.get("lastName")  # Can be none

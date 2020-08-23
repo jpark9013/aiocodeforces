@@ -1,7 +1,5 @@
 """The Comment class for the CodeForces API."""
 
-from api.apirequestmaker import strip_dict
-
 
 class Comment:
     """Represents a CodeForces comment.
@@ -37,7 +35,6 @@ class Comment:
     __slots__ = ["id", "creation_time_seconds", "commentator_handle", "locale", "text", "parent_comment_id", "rating"]
 
     def __init__(self, dic):
-        dic = strip_dict(dic)
         self.id: int = dic["id"]
         self.creation_time_seconds: int = dic["creationTimeSeconds"]
         self.commentator_handle: str = dic["commentatorHandle"]

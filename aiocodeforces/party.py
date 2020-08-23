@@ -1,8 +1,7 @@
 """The Party class for the CodeForces API."""
 
-from api.apirequestmaker import strip_dict
-from api.return_objects.enum import PartyParticipantType
-from api.return_objects.member import Member
+from aiocodeforces.enum import PartyParticipantType
+from aiocodeforces.member import Member
 
 
 class Party:
@@ -42,7 +41,6 @@ class Party:
                  "start_time_seconds"]
 
     def __init__(self, dic):
-        dic = strip_dict(dic)
         self.contest_id: int = dic["contestId"]
         self.members: list = [Member(i) for i in dic["members"]]  # of Members
         self.participant_type: PartyParticipantType = PartyParticipantType(dic["participantType"])

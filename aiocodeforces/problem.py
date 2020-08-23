@@ -1,7 +1,6 @@
 """The Problem class for the CodeForces API."""
 
-from api.apirequestmaker import strip_dict
-from api.return_objects.enum import ProblemType
+from aiocodeforces.enum import ProblemType
 
 
 class Problem:
@@ -39,7 +38,6 @@ class Problem:
     __slots__ = ["contest_id", "problemset_name", "index", "name", "type", "points", "rating", "tags"]
 
     def __init__(self, dic):
-        dic = strip_dict(dic)
         self.contest_id: int = dic.get("contestId")  # Can be none
         self.problemset_name: str = dic.get("problemsetName")  # Can be none
         self.index: str = dic["index"]

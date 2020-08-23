@@ -12,7 +12,7 @@ setup(
     author="Julian Park",
     author_email="jpark9013@gmail.com",
     description="An asyncio wrapper for the CodeForces API",
-    keywords="asyncio wrapper codeforces api",
+    keywords="asyncio wrapper codeforces aiocodeforces",
     url="https://github.com/jpark9013/aiocodeforces",
     license="MIT",
     install_requires=["aiohttp"]

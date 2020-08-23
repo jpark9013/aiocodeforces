@@ -1,7 +1,5 @@
 """The BlogEntry class for the CodeForces API"""
 
-from api.apirequestmaker import strip_dict
-
 
 class BlogEntry:
     """Represents a CodeForces Blog Entry.
@@ -42,7 +40,6 @@ class BlogEntry:
                  "modification_time_seconds", "allow_view_history", "tags", "rating", "content"]
 
     def __init__(self, dic):
-        dic = strip_dict(dic)
         self.id: int = dic["id"]
         self.original_locale: str = dic["originalLocale"]
         self.creation_time_seconds: int = dic["creationTimeSeconds"]

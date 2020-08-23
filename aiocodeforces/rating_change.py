@@ -1,7 +1,5 @@
 """The RatingChange class for the CodeForces API."""
 
-from api.apirequestmaker import strip_dict
-
 
 class RatingChange:
     """
@@ -39,7 +37,6 @@ class RatingChange:
                  "new_rating"]
 
     def __init__(self, dic):
-        dic = strip_dict(dic)
         self.contest_id: int = dic["contestId"]
         self.contest_name: str = dic["contestName"]
         self.handle: str = dic["handle"]

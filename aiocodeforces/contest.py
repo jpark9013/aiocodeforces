@@ -1,7 +1,6 @@
 """The Contest class for the CodeForces API."""
 
-from api.apirequestmaker import strip_dict
-from api.return_objects.enum import ContestPhase, ContestType
+from aiocodeforces.enum import ContestPhase, ContestType
 
 
 class Contest:
@@ -62,7 +61,6 @@ class Contest:
                  "icpc_region", "country", "city", "season"]
 
     def __init__(self, dic):
-        dic = strip_dict(dic)
         self.id: int = dic["id"]
         self.name: str = dic["name"]
         self.type: ContestType = ContestType(dic["type"])

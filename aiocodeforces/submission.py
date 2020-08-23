@@ -1,9 +1,8 @@
 """The Submission class for the CodeForces API."""
 
-from api.apirequestmaker import strip_dict
-from api.return_objects.enum import SubmissionTestSet, SubmissionVerdict
-from api.return_objects.party import Party
-from api.return_objects.problem import Problem
+from aiocodeforces.enum import SubmissionTestSet, SubmissionVerdict
+from aiocodeforces.party import Party
+from aiocodeforces.problem import Problem
 
 
 class Submission:
@@ -55,7 +54,6 @@ class Submission:
                  "memory_consumed_bytes", "points"]
 
     def __init__(self, dic):
-        dic = strip_dict(dic)
         self.id: int = dic["id"]
         self.contest_id: int = dic["contestId"]
         self.creation_time_seconds: int = dic["creationTimeSeconds"]

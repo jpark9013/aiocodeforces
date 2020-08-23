@@ -1,9 +1,7 @@
 """The Hack class for the CodeForces API."""
 
-from api.apirequestmaker import strip_dict
-from api.return_objects.enum import HackVerdict
-from api.return_objects.party import Party
-from api.return_objects.problem import Problem
+from aiocodeforces.party import Party
+from aiocodeforces.problem import Problem
 
 
 class JudgeProtocol:
@@ -63,7 +61,6 @@ class Hack:
     __slots__ = ["id", "creation_time_seconds", "hacker", "defender", "verdict", "problem", "test", "judge_protocol"]
 
     def __init__(self, dic):
-        dic = strip_dict(dic)
         self.id: int = dic["id"]
         self.creation_time_seconds: int = dic["creationTimeSeconds"]
         self.hacker: Party = Party(dic["hacker"])
