@@ -5,8 +5,8 @@ import random
 import time
 from abc import ABC
 from collections import OrderedDict
-from io import StringIO
 from html.parser import HTMLParser
+from io import StringIO
 
 import aiohttp
 
@@ -21,6 +21,10 @@ from aiocodeforces.rating_change import RatingChange
 from aiocodeforces.recent_action import RecentAction
 from aiocodeforces.submission import Submission
 from aiocodeforces.user import User
+
+
+class HTTPError(Exception):
+    pass
 
 
 # THX https://stackoverflow.com/questions/753052/strip-html-from-strings-in-python
@@ -180,8 +184,10 @@ class Client:
 
         if not rand:
             self._rand = random.randint(0, 899999) + 100000
+        elif not isinstance(rand, int):
+            raise TypeError(f"Non integer passed as rand: {rand}")
         elif rand > 999999 or rand < 100000:
-            raise Exception(f"Non 6 digit integer passed as rand: {rand}")
+            raise ValueError(f"Non 6 digit integer passed as rand: {rand}")
         else:
             self._rand = int(rand)
 
@@ -191,7 +197,7 @@ class Client:
 
         async with self._session.get(url) as resp:
             if resp.status == 404:
-                raise Exception(f"Request failed: no such method.")
+                raise HTTPError(f"Request failed: no such method {method}.")
 
             elif resp.status == 429 or resp.status == 503:
                 self._c += 1
@@ -199,7 +205,7 @@ class Client:
                     await asyncio.sleep(1)
                     await self._get_result(url)
                 else:
-                    raise Exception(f"Tried to get response from URL 10 times, however response failed.")
+                    raise HTTPError(f"Tried to get response from URL 10 times, however response failed.")
 
             self._c = 0
 
@@ -211,7 +217,7 @@ class Client:
 
     def _check_status(self, resp):
         if resp["status"] == "FAILED":
-            raise Exception(f"Request failed: {resp['comment']}")
+            raise HTTPError(f"Request failed: {resp['comment']}")
 
     def stop(self):
         """Stops the asyncio loop."""
@@ -337,7 +343,7 @@ class Client:
         defaults to False."""
 
         if self._anonymous:
-            raise Exception("Cannot get friends when sending anonymous requests.")
+            raise HTTPError("Cannot get friends when sending anonymous requests.")
 
         result = await self._get_result("user.friends", onlyOnline=onlyOnline)
         return result
