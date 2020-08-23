@@ -56,6 +56,8 @@ class Client:
         The random number to send requests to CodeForces API. Takes in a 6-digit integer, defaults to None.
     strip_html: Optional[:class:`bool`]
         Whether the library should parse out the HTML tags or not. Defaults to True.
+    session: Optional[:class:`aiohttp.ClientSession`]
+        Include an aiohttp ClientSession. Defaults to creating a new one.
     """
 
     _c = 0
@@ -73,7 +75,7 @@ class Client:
             self.loop.run_forever()
             self._own_loop = True
 
-        if session is not None and not isinstance(session, aiohttp.ClientSession()):
+        if session is not None and not isinstance(session, aiohttp.ClientSession):
             raise TypeError(f"Expected client session for kwarg session, received {session} instead.")
 
         self._session = aiohttp.ClientSession() if session is None else session
