@@ -26,6 +26,6 @@ async def main():
             print(i.comment.text)
         except AttributeError:
             print("No attribute text")
-
+    await client.close()
 
 loop.run_until_complete(main())

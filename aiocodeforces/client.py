@@ -62,18 +62,10 @@ class Client:
 
     _c = 0
     _anonymous = False
-    _own_loop = False
 
     def __init__(self, api_key=None, secret=None, rand=None, strip_html=True, session=None):
 
         self._strip_html = strip_html
-
-        try:
-            self.loop = asyncio.get_running_loop()
-        except RuntimeError:
-            self.loop = asyncio.get_event_loop()
-            self.loop.run_forever()
-            self._own_loop = True
 
         if session is not None and not isinstance(session, aiohttp.ClientSession):
             raise TypeError(f"Expected client session for kwarg session, received {session} instead.")
@@ -221,11 +213,11 @@ class Client:
         if resp["status"] == "FAILED":
             raise HTTPError(f"Request failed: {resp['comment']}")
 
-    def stop(self):
-        """Stops the asyncio loop."""
+    async def close(self):
+        """Closes the aiohttp loop."""
 
-        self.loop.stop()
-        self.loop.close()
+        await self._session.close()
+        self._session = None
 
     def _remove_none(self, dic):
         return {k: dic[k] for k in dic if dic[k]}
