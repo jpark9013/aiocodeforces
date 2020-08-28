@@ -43,7 +43,7 @@ class Party:
     def __init__(self, dic):
         self.contest_id: int = dic["contestId"]
         self.members: list = [Member(i) for i in dic["members"]]  # of Members
-        self.participant_type: PartyParticipantType = PartyParticipantType(dic["participantType"])
+        self.participant_type: PartyParticipantType = PartyParticipantType[dic["participantType"]]
         self.team_id: int = dic.get("teamId")  # Can be none
         self.team_name: str = dic.get("teamName")  # Can be none
         self.ghost: bool = dic["ghost"]

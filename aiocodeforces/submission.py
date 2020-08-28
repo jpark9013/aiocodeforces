@@ -61,8 +61,8 @@ class Submission:
         self.problem: Problem = Problem(dic["problem"])
         self.author: Party = Party(dic["author"])
         self.programming_language: str = dic["programmingLanguage"]
-        self.verdict: SubmissionVerdict = SubmissionVerdict(dic.get("verdict")) if dic.get("verdict") else None
-        self.testset: SubmissionTestSet = SubmissionTestSet(dic["testset"])
+        self.verdict: SubmissionVerdict = SubmissionVerdict[dic.get("verdict")] if dic.get("verdict") else None
+        self.testset: SubmissionTestSet = SubmissionTestSet[dic["testset"]]
         self.passed_test_count: int = dic["passedTestCount"]
         self.time_consumed_millis: int = dic["timeConsumedMillis"]
         self.memory_consumed_bytes: int = dic["memoryConsumedBytes"]

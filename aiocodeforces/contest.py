@@ -63,8 +63,8 @@ class Contest:
     def __init__(self, dic):
         self.id: int = dic["id"]
         self.name: str = dic["name"]
-        self.type: ContestType = ContestType(dic["type"])
-        self.phase: ContestPhase = ContestPhase(dic["phase"])
+        self.type: ContestType = ContestType[dic["type"]]
+        self.phase: ContestPhase = ContestPhase[dic["phase"]]
         self.frozen: bool = dic["frozen"]
         self.duration_seconds: int = dic["durationSeconds"]
         self.start_time_seconds: int = dic.get("startTimeSeconds")  # Can be none

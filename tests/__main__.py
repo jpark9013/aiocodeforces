@@ -26,6 +26,9 @@ async def main():
             print(i.comment.text)
         except AttributeError:
             print("No attribute text")
+    a = await client.get_contest_list()
+    for i in a:
+        print(i.name)
     await client.close()
 
 loop.run_until_complete(main())
