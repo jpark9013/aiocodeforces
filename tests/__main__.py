@@ -1,6 +1,6 @@
 import asyncio
 
-from aiocodeforces.client import Client
+from client import Client
 
 with open("config.txt", "r") as f:
     key = f.readline()[:-1]

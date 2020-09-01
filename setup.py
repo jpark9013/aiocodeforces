@@ -7,7 +7,7 @@ classifiers = [
 
 setup(
     name="aiocodeforces",
-    version="1.0.9",
+    version="1.1.1",
     packages=find_packages(),
     author="Julian Park",
     author_email="jpark9013@gmail.com",
