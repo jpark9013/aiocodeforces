@@ -1,6 +1,6 @@
 import asyncio
 
-from client import Client
+from aiocodeforces.client import Client
 
 with open("config.txt", "r") as f:
     key = f.readline()[:-1]
@@ -29,6 +29,7 @@ async def main():
     a = await client.get_contest_list()
     for i in a:
         print(i.name)
+    print(await client.get_friends(only_online=True))
     await client.close()
 
 loop.run_until_complete(main())

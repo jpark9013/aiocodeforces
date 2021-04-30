@@ -3,6 +3,7 @@ import hashlib
 import json
 import random
 import time
+import typing
 from abc import ABC
 from collections import OrderedDict
 from html.parser import HTMLParser
@@ -44,27 +45,26 @@ class _MLStripper(HTMLParser, ABC):
 
 
 class Client:
-    """Represents a Client to make requests to the CodeForces API through.
-
-    Parameters
-    -----------
-    api_key: Optional[:class:`int`]
-        The API key to send requests to CodeForces API.
-    secret: Optional[:class:`int`]
-        The secret to send requests to CodeForces API.
-    rand: Optional[:class:`int`]
-        The random number to send requests to CodeForces API. Takes in a 6-digit integer, defaults to None.
-    strip_html: Optional[:class:`bool`]
-        Whether the library should parse out the HTML tags or not. Defaults to True.
-    session: Optional[:class:`aiohttp.ClientSession`]
-        Include an aiohttp ClientSession. Defaults to creating a new one.
-    """
 
     _c = 0
     _anonymous = False
 
-    def __init__(self, api_key=None, secret=None, rand=None, strip_html=True, session=None):
+    def __init__(self,
+                 api_key: str = None,
+                 secret: str = None,
+                 rand: int = None,
+                 strip_html: bool = True,
+                 session: aiohttp.ClientSession = None) -> None:
+        """
 
+        Parameters
+        ----------
+        api_key
+        secret
+        rand
+        strip_html
+        session
+        """
         self._strip_html = strip_html
 
         if session is not None and not isinstance(session, aiohttp.ClientSession):
@@ -213,8 +213,7 @@ class Client:
         if resp["status"] == "FAILED":
             raise HTTPError(f"Request failed: {resp['comment']}")
 
-    async def close(self):
-        """Closes the aiohttp loop."""
+    async def close(self) -> None:
 
         await self._session.close()
         self._session = None
@@ -222,157 +221,126 @@ class Client:
     def _remove_none(self, dic):
         return {k: dic[k] for k in dic if dic[k]}
 
-    async def get_blog_entry_comments(self, ID):
-        """Gets a list of comment objects. Takes in one argument, ID, which is an int."""
-
-        result = await self._get_result("blogEntry.comments", blogEntryId=ID)
+    async def get_blog_entry_comments(self, blog_entry_id: int) -> typing.List[Comment]:
+        result = await self._get_result("blogEntry.comments", blogEntryId=blog_entry_id)
         return [Comment(i) for i in result]
 
-    async def view_blog_entry(self, ID):
-        """Get a BlogEntry object. Takes in one argument, ID, which is an int."""
-
-        result = await self._get_result("blogEntry.view", blogEntryId=ID)
+    async def view_blog_entry(self, blog_entry_id: int) -> BlogEntry:
+        result = await self._get_result("blogEntry.view", blogEntryId=blog_entry_id)
         return BlogEntry(result)
 
-    async def get_contest_hacks(self, contestID):
-        """Get a list of Hack objects. Takes in one argument, contestID, which is an int."""
-
-        result = await self._get_result("contest.hacks", contestId=contestID)
+    async def get_contest_hacks(self, contest_id: int) -> Hack:
+        result = await self._get_result("contest.hacks", contestId=contest_id)
         return Hack(result)
 
-    async def get_contest_list(self, gym=False):
-        """Returns a list of all avaliable contests. Takes in one argument, gym, which is a boolean. Defaults to
-        false."""
-
+    async def get_contest_list(self, gym: bool = False) -> typing.List[Contest]:
         result = await self._get_result("contest.list", gym=gym)
         return [Contest(i) for i in result]
 
-    async def get_contest_rating_changes(self, contestID):
-        """Returns a list of RatingChange objects. Takes in one argument, contestID, which is an int."""
-
-        result = await self._get_result("contest.ratingChanges", contestId=contestID)
+    async def get_contest_rating_changes(self, contest_id: int) -> typing.List[RatingChange]:
+        result = await self._get_result("contest.ratingChanges", contestId=contest_id)
         return [RatingChange(i) for i in result]
 
-    async def get_contest_standings(self, contestID, startIndex=None, count=None, handles=None, room=None,
-                                    showUnofficial=None):
-        """Returns a dictionary with contest, problems, and rows being the three keys. The values are a Contest object,
-        a list of Problem objects, and a list of RanklistRow objects respectively. Takes in 6 arguments, 5 of them being
-        optional. The only required argument, contestID, is an int. The rest, startIndex, count, handles, room, and
-        showUnofficial, are int, int, list, str, and boolean, respectively."""
+    async def get_contest_standings(self,
+                                    contest_id: int,
+                                    start_index: int = None,
+                                    count: int = None,
+                                    handles: typing.List[str] = None,
+                                    room: str = None,
+                                    show_unofficial: bool = None) -> \
+            typing.Tuple[Contest, typing.List[Problem], typing.List[RanklistRow]]:
 
         kwargs = {
-            "contestId": contestID,
-            "from": startIndex,
+            "contestId": contest_id,
+            "from": start_index,
             "count": count,
             "handles": handles,
             "room": room,
-            "showUnofficial": showUnofficial
+            "showUnofficial": show_unofficial
         }
 
-        result = await self._get_result("contest.standings", self._remove_none(kwargs))
+        result = await self._get_result("contest.standings", **self._remove_none(kwargs))
 
-        result["contest"] = Contest(result["contest"])
-        result["problems"] = [Problem(i) for i in result["problems"]]
-        result["rows"] = [RanklistRow(i) for i in result["rows"]]
+        contest = Contest(result["contest"])
+        problems = [Problem(i) for i in result["problems"]]
+        rows = [RanklistRow(i) for i in result["rows"]]
 
-        return result
+        return contest, problems, rows
 
-    async def get_contest_status(self, contestID, handle=None, startIndex=None, count=None):
-        """Returns a list of submission objects. Takes in 4 arguments. contestID, an int, is the only required one. The
-        rest, handle, startIndex, and count, are str, int, and int, respectively."""
+    async def get_contest_status(self,
+                                 contest_id: int,
+                                 handle: str = None,
+                                 start_index: int = None,
+                                 count: int = None) -> typing.List[Submission]:
 
         kwargs = {
-            "contestId": contestID,
+            "contestId": contest_id,
             "handle": handle,
-            "startIndex": startIndex,
+            "startIndex": start_index,
             "count": count
         }
 
-        result = await self._get_result("contest.status", self._remove_none(kwargs))
+        result = await self._get_result("contest.status", **self._remove_none(kwargs))
         return [Submission(i) for i in result]
 
-    async def get_problems(self, tags=None, problemsetName=None):
-        """Returns a tuple of two lists from a problemset. The first list of Problems, and the second is the list of
-        ProblemStatistics. Takes in two optional arguments, tags (a list of strings), and problemset
-        name (also a string)."""
+    async def get_problems(self, tags: typing.List[str] = None, problemset_name: str = None) \
+            -> typing.Tuple[typing.List[Problem], typing.List[ProblemStatistics]]:
 
         kwargs = {
             "tag": tags,
-            "problemsetName": problemsetName
+            "problemsetName": problemset_name
         }
 
-        result = await self._get_result("problemset.problems", self._remove_none(kwargs))
-        result[0] = [Problem(i) for i in result[0]]
-        result[1] = [ProblemStatistics(i) for i in result[1]]
+        result = await self._get_result("problemset.problems", **self._remove_none(kwargs))
+        problems = [Problem(i) for i in result[0]]
+        problem_statistics = [ProblemStatistics(i) for i in result[1]]
 
-        return result
+        return problems, problem_statistics
 
-    async def get_problemset_submissions(self, count, problemsetName=None):
-        """Returns a list of Submission objects, in decreasing order of submission ID. Two arguments: count, which is
-        a required argument that is an int, and problemsetName, which is an optional argument that is a str."""
+    async def get_problemset_submissions(self, count: int, problemset_name: str = None) -> typing.List[Submission]:
 
         kwargs = {
             "count": count,
-            "problemsetName": problemsetName
+            "problemsetName": problemset_name
         }
 
-        result = await self._get_result("problemset.recentStatus", self._remove_none(kwargs))
+        result = await self._get_result("problemset.recentStatus", **self._remove_none(kwargs))
         return [Submission(i) for i in result]
 
-    async def get_recent_actions(self, maxCount=10):
-        """Returns a list of RecentAction objects. Defaults to 10, use argument maxCount to change."""
-
-        result = await self._get_result("recentActions", maxCount=maxCount)
+    async def get_recent_actions(self, max_count: int = 10) -> typing.List[RecentAction]:
+        result = await self._get_result("recentActions", maxCount=max_count)
         return [RecentAction(i) for i in result]
 
-    async def get_blog_entries(self, handle):
-        """Returns a list of BlogEntry objects from a user. Takes in one required argument, handle, which is a
-        string."""
-
+    async def get_blog_entries(self, handle: str) -> typing.List[BlogEntry]:
         result = await self._get_result("user.blogEntries", handle=handle)
         return [BlogEntry(i) for i in result]
 
-    async def get_friends(self, onlyOnline=False):
-        """Returns a list of friends's handles from the authorized user. Takes in one argument, onlyOnline, which
-        defaults to False."""
-
+    async def get_friends(self, only_online: bool = False) -> typing.List[str]:
         if self._anonymous:
             raise HTTPError("Cannot get friends when sending anonymous requests.")
 
-        result = await self._get_result("user.friends", onlyOnline=onlyOnline)
+        result = await self._get_result("user.friends", onlyOnline=only_online)
         return result
 
-    async def get_info(self, handles):
-        """Returns a list of User objects. Takes in a single required argument, handles, which is a list of user
-        handles."""
-
+    async def get_info(self, handles: typing.List[str]) -> typing.List[User]:
         result = await self._get_result("user.friends", handles=handles)
         return [User(i) for i in result]
 
-    async def get_rated_users(self, activeOnly=True):
-        """Returns a list of users who are rated (have participated in at least one contest). Takes in an argument,
-        activeOnly, which when True will only return users that have participated in contests in the last month.
-        Defaults to True. This function also takes an immensely long time to execute, so it is not recommended to use
-        it."""
-
-        result = await self._get_result("user.ratedList", activeOnly=activeOnly)
+    async def get_rated_users(self, active_only: bool = True) -> typing.List[User]:
+        result = await self._get_result("user.ratedList", activeOnly=active_only)
         return [User(i) for i in result]
 
-    async def get_rating(self, handle):
-        """Returns a list of RatingChange objects for the user. Required argument is a user handle, which is str."""
-
+    async def get_rating(self, handle: str) -> typing.List[RatingChange]:
         result = await self._get_result("user.rating", handle=handle)
         return [RatingChange(i) for i in result]
 
-    async def get_submissions(self, handle, startIndex=None, count=None):
-        """Returns a list of Submission objects from the user, sorted decreasing by ID. Required arguments: user handle,
-        str. Optional arguments: startIndex, count."""
+    async def get_submissions(self, handle: str, start_index: int = None, count: int = None) -> typing.List[Submission]:
 
         kwargs = {
             "handle": handle,
-            "startIndex": startIndex,
+            "startIndex": start_index,
             "count": count
         }
 
-        result = await self._get_result("user.status", self._remove_none(kwargs))
+        result = await self._get_result("user.status", **self._remove_none(kwargs))
         return [Submission(i) for i in result]

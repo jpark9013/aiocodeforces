@@ -1,41 +1,8 @@
-"""The Party class for the CodeForces API."""
-
 from aiocodeforces.enum import PartyParticipantType
 from aiocodeforces.member import Member
 
 
 class Party:
-    """Represents a Party on CodeForces.
-
-    ..container:: operations
-
-        ..describe:: x == y
-
-            Checks if two Parties are equal.
-
-        ..describe: x != y
-
-            Checks if two Parties are not equal.
-
-    Attributes
-    -----------
-    contest_id: :class:``int``
-        The Contest ID of the Contest in which the Party is participating in.
-    members: :class:``list``
-        The list of members within the Party.
-    participant_type: :class:``PartyParticipantType``
-        The participant type of the Party.
-    team_id: :class:``int``
-        The ID of the Party. Can be ``None``.
-    team_name: :class:``str``
-        The name of the Party. Can be ``None``.
-    ghost: :class:``bool``
-        Whether the Party is a ghost in the Contest or not (if their rating is impacted).
-    room: :class:``int``
-        The room of the Party. Can be ``None``.
-    start_time_seconds: :class:``int``
-        The start time when the Party started the Contest. Can be ``None``.
-    """
 
     __slots__ = ["contest_id", "members", "participant_type", "team_id", "team_name", "ghost", "room",
                  "start_time_seconds"]
